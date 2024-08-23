@@ -1,0 +1,9 @@
+# Игнорировать все сокет-файлы MySQL
+mysql/mysql.sock
+
+# Игнорировать другие временные файлы и каталоги
+mysql/*.pid
+mysql/*.sock
+mysql/auto.cnf
+mysql/*.index
+mysql/ib_buffer_pool

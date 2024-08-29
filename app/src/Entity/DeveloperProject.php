@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\DeveloperProjectRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: DeveloperProjectRepository::class)]
 class DeveloperProject
@@ -13,9 +14,11 @@ class DeveloperProject
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Positive]
     #[ORM\Column]
     private ?int $developer_id = null;
 
+    #[Assert\Positive]
     #[ORM\Column]
     private ?int $project_id = null;
 

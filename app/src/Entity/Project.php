@@ -13,9 +13,11 @@ class Project
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Имя проекта не должно быть пустым.')]
     #[ORM\Column(length: 255)]
     private ?string $name_project = null;
 
+    #[Assert\NotBlank(message: 'Имя клиента не должно быть пустым.')]
     #[ORM\Column(length: 255)]
     private ?string $client = null;
 

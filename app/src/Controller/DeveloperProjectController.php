@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 class DeveloperProjectController extends AbstractController
 {
 
@@ -120,5 +120,36 @@ class DeveloperProjectController extends AbstractController
 
         return new Response('Все пользователи успешно сняты с проекта', Response::HTTP_CREATED);
 
+    }
+      /**
+    * getStatisticdeveloper - получение статистики пользователей
+    *
+    * Функция отправляет всю статику о пользователях 
+    * 
+    *
+    */
+    #[Route('/devproject/statistic', name: 'app_devproject_statistic', methods: ['GET'])]
+    public function getStatisticDevProject(Request $request, ValidatorInterface $validator, EntityManagerInterface $entityManager): Response
+    {
+            $projectsPerDeveloper = $entityManager->getRepository(DeveloperProject::class)->getProjectsPerDeveloper();
+            $developersInProjects = $entityManager->getRepository(DeveloperProject::class)->getDevelopersInProjects();
+            $averageAge = $entityManager->getRepository(Developer::class)->findAverageAge();
+            $developerCountByPosition = $entityManager->getRepository(Developer::class)->getDeveloperCountByPosition();
+            $developersByGender = $entityManager->getRepository(Developer::class)->getDevelopersByGender();
+            $totalProjects = $entityManager->getRepository(Project::class)->getUniqueClients(); 
+
+            $data = [
+                'projects_per_developer' => $projectsPerDeveloper,
+                'developers_in_projects' => $developersInProjects,
+                'average_age' => $averageAge,
+                'developer_count_by_position' => $developerCountByPosition,
+                'developers_by_gender' => $developersByGender,
+                'total_projects' => $totalProjects,
+            ];
+
+             $statisticsObject = (object) $data;
+
+
+        return new JsonResponse($statisticsObject, Response::HTTP_CREATED);
     }
   }

@@ -111,5 +111,6 @@ class DeveloperController extends AbstractController
 
         return new Response('Информация о пользователе обновлена', Response::HTTP_OK);
     }
+    
   
 }

@@ -16,28 +16,43 @@ class DeveloperRepository extends ServiceEntityRepository
         parent::__construct($registry, Developer::class);
     }
 
-    //    /**
-    //     * @return Developer[] Returns an array of Developer objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+     * Получает средний возраст всех разработчиков.
+     *
+     * @return float Средний возраст.
+     */
+    public function findAverageAge(): float
+    {
+        return $this->createQueryBuilder('d')
+            ->select('AVG(d.age) as avg_age')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Developer
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+     /**
+     * Возвращает количество разработчиков по каждой должности.
+     *
+     * @return array Массив с должностями и количеством разработчиков.
+     */
+    public function getDeveloperCountByPosition()
+    {
+        $qb = $this->createQueryBuilder('d')
+            ->select('d.Position, COUNT(d.id) as developer_count')
+            ->groupBy('d.Position');
+
+        return $qb->getQuery()->getResult();
+    }
+      /**
+     * Возвращает количество разработчиков по полу.
+     *
+     * @return array Массив с полами и количеством разработчиков.
+     */
+    public function getDevelopersByGender(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->select('d.gender as gender, COUNT(d.id) as developer_count')
+            ->groupBy('d.gender')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -15,29 +15,39 @@ class DeveloperProjectRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, DeveloperProject::class);
     }
+    /**
+     * Возвращает количество проектов на каждого разработчика.
+     *
+     * @return array Массив с идентификаторами разработчиков и количеством проектов.
+     */
+    public function getProjectsPerDeveloper(): array
+    {
+        $entityManager = $this->getEntityManager();
 
-    //    /**
-    //     * @return DeveloperProject[] Returns an array of DeveloperProject objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        $query = $entityManager->createQuery(
+            'SELECT d.id AS developer_id, d.full_name, COUNT(dp.project_id) AS project_count
+            FROM App\Entity\Developer d
+            LEFT JOIN App\Entity\DeveloperProject dp WITH d.id = dp.developer_id
+            GROUP BY d.id'
+        );
 
-    //    public function findOneBySomeField($value): ?DeveloperProject
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return $query->getResult();
+    }
+ /**
+     * Возвращает количество разработчиков, работающих над проектами.
+     *
+     * @return int Количество уникальных разработчиков.
+     */
+    public function getDevelopersInProjects(): int
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT COUNT(DISTINCT dp.developer_id) as developers_in_projects
+            FROM App\Entity\DeveloperProject dp'
+        );
+
+        return $query->getSingleScalarResult();
+    }
+
 }
